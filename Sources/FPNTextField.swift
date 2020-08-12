@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import libPhoneNumber_iOS
 
 open class FPNTextField: UITextField {
 
@@ -337,7 +338,11 @@ open class FPNTextField: UITextField {
 			if let validPhoneNumber = getValidNumber(phoneNumber: cleanedPhoneNumber) {
 				nbPhoneNumber = validPhoneNumber
 
-				cleanedPhoneNumber = "+\(validPhoneNumber.countryCode.stringValue)\(validPhoneNumber.nationalNumber.stringValue)"
+                                if let nationalPhone = try? phoneUtil.format(validPhoneNumber, numberFormat: .NATIONAL) {
+                                   cleanedPhoneNumber = "+\(validPhoneNumber.countryCode.stringValue)\(nationalPhone)";
+                                } else {
+				   cleanedPhoneNumber = "+\(validPhoneNumber.countryCode.stringValue)\(validPhoneNumber.nationalNumber.stringValue)"
+                                }
 
 				if let inputString = formatter?.inputString(cleanedPhoneNumber) {
 					text = remove(dialCode: phoneCode, in: inputString)
